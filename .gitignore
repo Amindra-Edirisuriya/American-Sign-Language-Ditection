@@ -1,0 +1,22 @@
+# Original dataset
+media_pipe_keypoints_dataset/
+
+# Processed datasets
+dataset/processed/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Jupyter temporary files
+*.tmp
+
+# Environment files
+.env
+.venv/
+venv/
+
+# Model files
+models/*.pkl
+models/*.joblib
