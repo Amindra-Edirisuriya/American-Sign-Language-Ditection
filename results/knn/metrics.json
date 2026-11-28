@@ -1,0 +1,63 @@
+{
+  "model": "knn",
+  "protocol": "randomized_group_holdout_v1",
+  "fingerprint": "0215bf14cf7bb020c9a10b7dd8974bf41b2a09ef8ae0a40cab8e29cc3d94d6da",
+  "scores": {
+    "train": {
+      "samples": 38490,
+      "accuracy_pct": 99.90646921278254,
+      "errors": 36,
+      "predict_seconds": 4.678835100000015
+    },
+    "validation": {
+      "samples": 12712,
+      "accuracy_pct": 78.52422907488987,
+      "errors": 2730,
+      "predict_seconds": 1.0876246999998784
+    },
+    "test": {
+      "samples": 12517,
+      "accuracy_pct": 65.87041623392187,
+      "errors": 4272,
+      "predict_seconds": 1.0745497000000341
+    }
+  },
+  "train_test_gap_pp": 34.03605297886067,
+  "macro_f1": 0.7165397375959549,
+  "weighted_f1": 0.5956058760384629,
+  "mean_group_accuracy_pct": 99.84286123308553,
+  "test_groups": 6613,
+  "fit_seconds": 0.08965320000015709,
+  "estimator_params": {
+    "algorithm": "auto",
+    "leaf_size": 30,
+    "metric": "minkowski",
+    "metric_params": null,
+    "n_jobs": 2,
+    "n_neighbors": 3,
+    "p": 2,
+    "weights": "uniform"
+  },
+  "timestamp_status_scores": [
+    {
+      "group": "known_timestamp",
+      "samples": 5644,
+      "errors": 4039,
+      "accuracy_pct": 28.437278525868177
+    },
+    {
+      "group": "unknown_timestamp",
+      "samples": 6873,
+      "errors": 233,
+      "accuracy_pct": 96.60992288665794
+    }
+  ],
+  "versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0"
+  },
+  "python": "3.12.5"
+}
