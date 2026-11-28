@@ -1,0 +1,68 @@
+{
+  "model": "decision_tree",
+  "protocol": "randomized_group_holdout_v1",
+  "fingerprint": "0215bf14cf7bb020c9a10b7dd8974bf41b2a09ef8ae0a40cab8e29cc3d94d6da",
+  "scores": {
+    "train": {
+      "samples": 38490,
+      "accuracy_pct": 100.0,
+      "errors": 0,
+      "predict_seconds": 0.07093829999985246
+    },
+    "validation": {
+      "samples": 12712,
+      "accuracy_pct": 63.76651982378855,
+      "errors": 4606,
+      "predict_seconds": 0.020949199999904522
+    },
+    "test": {
+      "samples": 12517,
+      "accuracy_pct": 64.71199169129983,
+      "errors": 4417,
+      "predict_seconds": 0.020359000000098604
+    }
+  },
+  "train_test_gap_pp": 35.28800830870017,
+  "macro_f1": 0.7133174192768289,
+  "weighted_f1": 0.5895579570994138,
+  "mean_group_accuracy_pct": 99.24136228773642,
+  "test_groups": 6613,
+  "fit_seconds": 8.444757799999934,
+  "estimator_params": {
+    "ccp_alpha": 0.0,
+    "class_weight": null,
+    "criterion": "gini",
+    "max_depth": null,
+    "max_features": null,
+    "max_leaf_nodes": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "random_state": 42,
+    "splitter": "best"
+  },
+  "timestamp_status_scores": [
+    {
+      "group": "known_timestamp",
+      "samples": 5644,
+      "errors": 4103,
+      "accuracy_pct": 27.303330970942596
+    },
+    {
+      "group": "unknown_timestamp",
+      "samples": 6873,
+      "errors": 314,
+      "accuracy_pct": 95.43139822493816
+    }
+  ],
+  "versions": {
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0"
+  },
+  "python": "3.12.0"
+}
