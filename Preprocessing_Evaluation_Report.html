@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ASL project | Data preprocessing</title>
+<style>body{max-width:48rem;margin:3rem auto;padding:0 1.3rem;font:16px/1.55 system-ui;color:#192b31}h1,h2{line-height:1.2;color:#125251}h2{font-size:1.15em;margin-top:1.5em}table{border-collapse:collapse;width:100%}td,th{padding:.35em .7em;border-bottom:1px solid #cbd7d6;text-align:left}blockquote{border-left:3px solid #267773;margin:0;padding-left:1em}small{color:#42595c}@media print{body{font-size:10pt;margin:0}h2{break-after:avoid}table,blockquote{break-inside:avoid}}</style>
+<main><h1>Data preprocessing for ASL recognition</h1>
+<p>The goal was to turn hand landmarks into consistent model inputs and create a fair way to evaluate the classifier. If two captures of the same gesture are nearly identical, putting one in training and the other in testing can make accuracy look better than it would be on fresh captures.</p>
+<h2>Representing each gesture</h2>
+<p>The dataset contains 64,376 samples across 28 gesture classes. Each sample describes 21 MediaPipe hand landmarks. The CSV loader orders them by landmark ID, checks that IDs 0 through 20 each appear once, and validates that every X, Y and Z coordinate is a finite number. It flattens the coordinates into 63 features per sample. The folder name supplies the gesture label. The current workflow loads these features and labels from <code>data/landmarks.npz</code>.</p>
+<h2>Grouping related captures and removing duplicates</h2>
+<p>We linked samples with identical coordinates. When filename timestamps were available, we also linked adjacent captures of the same gesture class taken at most one second apart. Links form a group: captures at 0.0, 0.8 and 1.6 seconds would stay together because each consecutive pair satisfies the rule. We formed groups before removing duplicates so deleting a row could not break a link.</p>
+<p>For each repeated vector with one label, we kept the first sample in a stable filename order within its class. The procedure also checks for identical vectors assigned different labels and excludes all copies if that happens. We found no such conflicts. Removing 657 duplicate rows left <strong>63,719 samples in 34,495 groups</strong>.</p>
+<h2>Creating the training, validation and test sets</h2>
+<p>We assigned whole groups to sets using shuffled stratified group folds. Stratification aims to preserve the mix of gesture labels. We reserved one of five folds for testing, then one of four remaining-data folds for validation. Fixed random seeds make the split repeatable. Keeping each group intact explains the small difference from the 60/20/20 target. All 28 classes appear in each set.</p>
+<table><thead><tr><th>Set</th><th>Samples</th><th>Share</th><th>Purpose</th></tr></thead><tbody><tr><td>Training</td><td>38,490</td><td>60.41%</td><td>Fit the scaler and classifier</td></tr><tr><td>Validation</td><td>12,712</td><td>19.95%</td><td>Compare model choices</td></tr><tr><td>Test</td><td>12,517</td><td>19.64%</td><td>Measure held-out performance</td></tr></tbody></table>
+<h2>Label statistics by dataset split</h2>
+<p>Each value is the fraction of that split carrying the label. For example, A accounts for 1,256 of the 38,490 training samples, or 0.0326 (3.26%). Shares vary because related captures stay in the same split.</p>
+<style>.label-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;font-variant-numeric:tabular-nums}.label-grid td,.label-grid th{padding:.22em .3em}.label-grid td{text-align:right}@media screen and (max-width:700px){.label-grid{grid-template-columns:1fr}}</style>
+<div class="label-grid">
+<table><thead><tr><th>Label</th><th>Train</th><th>Validation</th><th>Test</th></tr></thead><tbody>
+<tr><th scope="row">A</th><td>0.0326</td><td>0.0548</td><td>0.0574</td></tr>
+<tr><th scope="row">B</th><td>0.0445</td><td>0.0393</td><td>0.0399</td></tr>
+<tr><th scope="row">C</th><td>0.0328</td><td>0.0331</td><td>0.0439</td></tr>
+<tr><th scope="row">Confirm</th><td>0.0216</td><td>0.0382</td><td>0.1174</td></tr>
+<tr><th scope="row">D</th><td>0.0386</td><td>0.0580</td><td>0.0261</td></tr>
+<tr><th scope="row">E</th><td>0.0380</td><td>0.0470</td><td>0.0352</td></tr>
+<tr><th scope="row">F</th><td>0.0400</td><td>0.0313</td><td>0.0589</td></tr>
+<tr><th scope="row">G</th><td>0.0408</td><td>0.0311</td><td>0.0316</td></tr>
+<tr><th scope="row">H</th><td>0.0432</td><td>0.0356</td><td>0.0649</td></tr>
+<tr><th scope="row">I</th><td>0.0402</td><td>0.0315</td><td>0.0304</td></tr>
+<tr><th scope="row">J</th><td>0.0449</td><td>0.0350</td><td>0.0353</td></tr>
+<tr><th scope="row">K</th><td>0.0300</td><td>0.0304</td><td>0.0308</td></tr>
+<tr><th scope="row">L</th><td>0.0375</td><td>0.0283</td><td>0.0275</td></tr>
+<tr><th scope="row">M</th><td>0.0433</td><td>0.0227</td><td>0.0221</td></tr>
+</tbody></table>
+<table><thead><tr><th>Label</th><th>Train</th><th>Validation</th><th>Test</th></tr></thead><tbody>
+<tr><th scope="row">N</th><td>0.0492</td><td>0.0258</td><td>0.0259</td></tr>
+<tr><th scope="row">O</th><td>0.0373</td><td>0.0370</td><td>0.0479</td></tr>
+<tr><th scope="row">P</th><td>0.0337</td><td>0.0219</td><td>0.0222</td></tr>
+<tr><th scope="row">Q</th><td>0.0183</td><td>0.0185</td><td>0.0188</td></tr>
+<tr><th scope="row">R</th><td>0.0446</td><td>0.0223</td><td>0.0230</td></tr>
+<tr><th scope="row">S</th><td>0.0227</td><td>0.0902</td><td>0.0189</td></tr>
+<tr><th scope="row">Space</th><td>0.0174</td><td>0.0175</td><td>0.0178</td></tr>
+<tr><th scope="row">Speak</th><td>0.0241</td><td>0.0243</td><td>0.0247</td></tr>
+<tr><th scope="row">T</th><td>0.0534</td><td>0.0606</td><td>0.0499</td></tr>
+<tr><th scope="row">U</th><td>0.0343</td><td>0.0692</td><td>0.0326</td></tr>
+<tr><th scope="row">V</th><td>0.0504</td><td>0.0303</td><td>0.0299</td></tr>
+<tr><th scope="row">W</th><td>0.0454</td><td>0.0245</td><td>0.0248</td></tr>
+<tr><th scope="row">X</th><td>0.0230</td><td>0.0233</td><td>0.0236</td></tr>
+<tr><th scope="row">Y</th><td>0.0182</td><td>0.0184</td><td>0.0187</td></tr>
+</tbody></table>
+</div>
+<p><small>Source: prepared/class_counts.csv. Proportions are rounded to four decimal places.</small></p>
+<h2>Checks before model training</h2>
+<p>The audit found zero exact coordinate vectors shared between sets. It checked 29,224 same-class timestamp links and found zero crossing a set boundary. The training script verifies the saved dataset and split fingerprint and repeats the overlap checks before fitting. Its pipeline learns each feature’s mean and scale from training samples alone and applies those values to validation and test samples.</p>
+<p><strong>Limitation.</strong> Timestamps were unavailable for 34,896 retained samples. The dataset also lacks signer and session IDs. The audit therefore establishes separation for the links we could check. Performance on entirely new signers remains an open question.</p>
+<h2>One-minute presentation</h2><blockquote>“My contribution was preparing the hand landmark data for model training. Each gesture has 21 landmarks, and each landmark has three coordinates, giving us 63 features per sample. The main challenge was keeping closely related captures together. For example, two captures of the same sign taken half a second apart might look almost identical. We grouped those captures when timestamps were available and kept each group in one set. We also removed 657 exact duplicates, leaving 63,719 samples. We split them roughly 60 percent for training, 20 percent for validation and 20 percent for testing. Our audit found zero exact duplicates shared across sets. One limitation is that we had no signer IDs, so we couldn’t verify how well the model generalizes to entirely new people.”</blockquote>
+<p><small>Project evidence: prepared/metadata.json and prepared/overlap_audit.json. Implementation: asl_data.py, grouping.py, preprocessing.py, audit.py, common.py and evaluation.py.</small></p></main></html>
