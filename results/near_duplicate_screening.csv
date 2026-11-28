@@ -1,0 +1,5 @@
+Euclidean distance threshold,Sampled test points within threshold,Percentage of sampled test points
+0.01,30,1.5
+0.05,138,6.9
+0.1,463,23.150000000000002
+0.2,1012,50.6

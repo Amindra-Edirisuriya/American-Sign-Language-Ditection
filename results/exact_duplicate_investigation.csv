@@ -1,0 +1,2 @@
+Training samples,Testing samples,Unique feature vectors,Shared exact feature groups,Testing samples with exact training matches,Test overlap percentage,Shared groups with conflicting labels
+51500,12876,63719,192,192,1.4911463187325256,0

@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "retained_rows_unique": true,
+  "partition_indices_disjoint": true,
+  "exact_vectors_shared_between_partitions": 0,
+  "original_timestamp_edges_checked": 29224,
+  "original_timestamp_edges_crossing_partitions": 0,
+  "retained_timestamp_neighbour_counts": {
+    "train_vs_validation": 0,
+    "train_vs_test": 0,
+    "validation_vs_test": 0
+  },
+  "missing_timestamp_samples_original": 35094,
+  "missing_timestamp_samples_retained": 34896,
+  "retained_timestamp_status": {
+    "train": {
+      "known": 17321,
+      "unknown": 21169
+    },
+    "validation": {
+      "known": 5858,
+      "unknown": 6854
+    },
+    "test": {
+      "known": 5644,
+      "unknown": 6873
+    }
+  },
+  "limitation": "Zero overlap refers to exact vectors and known SAME-CLASS filename timestamps within the chosen gap. Unknown timestamp, near-vector, signer and session overlap is not ruled out.",
+  "fingerprint": "0215bf14cf7bb020c9a10b7dd8974bf41b2a09ef8ae0a40cab8e29cc3d94d6da"
+}

@@ -1,0 +1,72 @@
+{
+  "config": {
+    "protocol": "randomized_group_holdout_v1",
+    "gap_ms": 1000,
+    "outer_seed": 42,
+    "inner_seed": 43,
+    "outer_folds": 5,
+    "inner_folds": 4,
+    "test_fold": 0,
+    "validation_fold": 0,
+    "group_rule": "Connected components of exact-vector matches and same-class adjacent timestamp links <= gap_ms, computed on ALL original rows.",
+    "deduplication": "Keep first sample in stable class/filename order for each single-label exact vector; exclude all rows of conflicting-label exact vectors.",
+    "assignment": "First fold of shuffled StratifiedGroupKFold(5,42) is test. First fold of shuffled StratifiedGroupKFold(4,43) on remaining groups is validation. No score-dependent search."
+  },
+  "fingerprint": "0215bf14cf7bb020c9a10b7dd8974bf41b2a09ef8ae0a40cab8e29cc3d94d6da",
+  "features": 63,
+  "classes": [
+    "A",
+    "B",
+    "C",
+    "Confirm",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "Space",
+    "Speak",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y"
+  ],
+  "stats": {
+    "original_samples": 64376,
+    "retained_samples": 63719,
+    "exact_duplicate_rows_removed": 657,
+    "conflicting_label_rows_removed": 0,
+    "unique_numeric_vectors": 63719,
+    "same_class_temporal_edges": 29224,
+    "retained_groups": 34495
+  },
+  "counts": {
+    "train": 38490,
+    "validation": 12712,
+    "test": 12517
+  },
+  "actual_percentages": {
+    "train": 60.40584441061536,
+    "validation": 19.950093378741034,
+    "test": 19.644062210643607
+  },
+  "target_percentages": {
+    "train": 60,
+    "validation": 20,
+    "test": 20
+  },
+  "note": "Group integrity takes priority over exact proportions. Groups are timestamp proxies, not signer/session identities."
+}
