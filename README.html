@@ -1,0 +1,76 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ASL project guide</title><style>body{font-family:Arial,Helvetica,sans-serif;max-width:960px;margin:42px auto;padding:0 28px;color:#18212b;font-size:16px;line-height:1.65}h1{font-size:32px;line-height:1.2;color:#111}h2{font-size:23px;color:#111;margin-top:34px;line-height:1.3}h3{font-size:19px;color:#111;margin-top:24px}p{margin:12px 0}table{border-collapse:collapse;width:100%;margin:20px 0;font-size:14px}td,th{border:1px solid #d5dce3;padding:10px 12px;text-align:left;vertical-align:top}th{background:#e9eff5;color:#111}tbody tr:nth-child(even){background:#f7f9fb}code{font-family:Consolas,monospace;font-size:.91em;background:#f0f3f6;padding:2px 4px;overflow-wrap:anywhere}pre{background:#f0f3f6;padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.5}pre code{padding:0}a{color:#174c82}nav{margin:25px 0 30px}nav a{display:block;line-height:1.8}img{max-width:100%;height:auto}@media print{body{max-width:none;margin:0;padding:0;font-size:10.5pt}h2,h3{break-after:avoid}table{font-size:9pt}tr{break-inside:avoid}nav{display:none}pre{font-size:9pt}}</style><body><h1>ASL randomized group project</h1><nav aria-label="Contents"><a href="#section-0">What changed</a><a href="#section-1">1 Install</a><a href="#section-2">2 Assign the contributions</a><a href="#section-3">3 Prepare once</a><a href="#section-4">4 Train your assigned model</a><a href="#section-5">5 Combine and compare</a><a href="#section-6">6 One command option</a><a href="#section-7">7 Predict one CSV</a><a href="#section-8">8 Check the work</a><a href="#section-9">Files to read next</a><a href="#section-10">Original sources</a></nav>
+<p>This is the revised project for four members: one preprocessing contribution and three model contributions. It trains Random Forest, KNN and Decision Tree using a fixed randomized group holdout. It includes the dataset, prepared split, trained pipelines, measured results, notebooks, checks and explanations.</p>
+<p>Start with the measured results in <code>results/REPORT.md</code>. Read <code>docs/METHOD_AND_LIMITATIONS.md</code> before describing the scores to your lecturer. This project has no chronological training protocol and no SVM model.</p>
+<h2 id="section-0">What changed</h2>
+<ul>
+<li>Construct connected groups from exact coordinate matches and known same-class filename timestamps at most 1,000 ms apart.</li>
+<li>Build groups on all original rows before removing repeated vectors, so removed observations cannot break temporal connections.</li>
+<li>Remove repeated single-label vectors once, using a deterministic representative. Quarantine all rows of a conflicting-label exact vector if one is found.</li>
+<li>Assign whole groups to partitions using fixed shuffled stratified group folds. There is no earlier/later assignment rule.</li>
+<li>Use shared partitions and training-only scaling for all three algorithms.</li>
+<li>Run an independent overlap audit before each model fits.</li>
+<li>Select a model using validation accuracy, then report all three models&#x27; test scores.</li>
+</ul>
+<p>Known overlap checks pass. Unknown timestamps and absent signer/session IDs remain limitations. The project does not claim all possible leakage is eliminated.</p>
+<h2 id="section-1">1 Install</h2>
+<p>Extract the entire ZIP. Open a terminal in <code>ASL_Random_Group_Project</code>. Use Python 3.12; the completed run used Python 3.12.14.</p>
+<p>Windows PowerShell:</p>
+<pre><code>py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt</code></pre>
+<p>On Linux/macOS use <code>python3.12 -m venv .venv</code>, then <code>.venv/bin/python</code> for subsequent commands. Each member creates their own environment; do not copy another computer&#x27;s <code>.venv</code> directory. Optional notebooks:</p>
+<pre><code>.\.venv\Scripts\python.exe -m pip install -r requirements-notebooks.txt</code></pre>
+<p>Select <code>.venv</code> as the notebook kernel. Notebook cells are supplied unexecuted. The included results came from running the Python scripts.</p>
+<h2 id="section-2">2 Assign the contributions</h2>
+<table><thead><tr><th>Member</th><th>Contribution</th><th>Python file</th><th>Notebook</th></tr></thead><tbody>
+<tr><td>1</td><td>Data preparation and audit</td><td><code>preprocessing.py</code></td><td><code>00_preprocessing.ipynb</code></td></tr>
+<tr><td>2</td><td>Random Forest</td><td><code>random_forest.py</code></td><td><code>01_random_forest.ipynb</code></td></tr>
+<tr><td>3</td><td>KNN</td><td><code>knn.py</code></td><td><code>02_knn.ipynb</code></td></tr>
+<tr><td>4</td><td>Decision Tree</td><td><code>decision_tree.py</code></td><td><code>03_decision_tree.ipynb</code></td></tr>
+</tbody></table>
+<p>Every member needs the complete project folder. The model files call shared helpers; they are separate contributions within this project, not standalone files.</p>
+<h2 id="section-3">3 Prepare once</h2>
+<p>Member 1 runs:</p>
+<pre><code>.\.venv\Scripts\python.exe preprocessing.py
+.\.venv\Scripts\python.exe audit.py</code></pre>
+<p>Check <code>prepared/metadata.json</code>, <code>class_counts.csv</code>, <code>split_manifest.csv</code> and <code>overlap_audit.json</code>. Share the source, <code>data/</code> and the same <code>prepared/</code> folder with the model members. The package already contains this prepared split; running preprocessing reproduces it with the pinned versions.</p>
+<p>The original raw dataset ZIP can be used without extracting its thousands of CSV files:</p>
+<pre><code>.\.venv\Scripts\python.exe preprocessing.py --data &quot;C:\path\media_pipe_keypoints_dataset.zip&quot;</code></pre>
+<p>This caches the loaded arrays as <code>data/landmarks.npz</code>. Preprocessing changes require rerunning all three models.</p>
+<h2 id="section-4">4 Train your assigned model</h2>
+<p>Each member runs one command:</p>
+<pre><code>.\.venv\Scripts\python.exe random_forest.py
+.\.venv\Scripts\python.exe knn.py
+.\.venv\Scripts\python.exe decision_tree.py</code></pre>
+<p>Editing is optional. Each script already defines a working estimator. It loads the common partitions, fits its scaler and classifier on training samples, evaluates all three partitions and saves results.</p>
+<p>Outputs are separate: <code>results/random_forest/</code>, <code>results/knn/</code>, <code>results/decision_tree/</code>. A rerun overwrites that model&#x27;s saved baseline outputs. Use <code>--output experiments/my_run</code> for exploratory outputs if you want to preserve the packaged baseline.</p>
+<h2 id="section-5">5 Combine and compare</h2>
+<p>Copy each member&#x27;s model result folder into the same <code>results/</code> folder, then run:</p>
+<pre><code>.\.venv\Scripts\python.exe compare_models.py
+.\.venv\Scripts\python.exe verify_project.py
+.\.venv\Scripts\python.exe write_report.py</code></pre>
+<p>The comparison rejects results with mismatched data/split fingerprints. It selects by validation accuracy and writes <code>comparison.csv</code>, <code>comparison.json</code> and <code>selection.json</code>. It does not retrain the winner.</p>
+<p>In the completed run KNN wins on validation; Random Forest is highest on test. Keep the validation-selected KNN rather than switching after seeing test results.</p>
+<h2 id="section-6">6 One command option</h2>
+<p>To reproduce preparation, all three models, comparison, control checks, verification and report:</p>
+<pre><code>.\.venv\Scripts\python.exe run_all.py</code></pre>
+<p>For a four-member contribution, use the separate commands above. Both paths call the same source.</p>
+<h2 id="section-7">7 Predict one CSV</h2>
+<pre><code>.\.venv\Scripts\python.exe predict.py data/example_landmarks.csv</code></pre>
+<p>The example is one held-out dataset sample, included only to demonstrate the input format. Its actual label is A; the packaged selected KNN predicts N. This demonstrates a real error, even with a high neighbour vote score, rather than claiming the sample proves live accuracy. It is not a new external evaluation. For your own sample, provide 21 rows with <code>Landmark,X,Y,Z</code> columns in the same coordinate convention. The script loads the selected fitted pipeline. Do not scale its input manually.</p>
+<p>No webcam capture interface is included. This project evaluates extracted landmark vectors, not motion sequences or sentence translation.</p>
+<h2 id="section-8">8 Check the work</h2>
+<pre><code>.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe verify_project.py
+.\.venv\Scripts\python.exe sanity_checks.py</code></pre>
+<p>Optional full comparison with original CSVs:</p>
+<pre><code>.\.venv\Scripts\python.exe verify_project.py --raw &quot;C:\path\media_pipe_keypoints_dataset.zip&quot;</code></pre>
+<p>The completed delivery includes <code>results/verification.json</code>, <code>sanity_checks.json</code> and <code>unit_tests.txt</code>. These checks do not require running a chronological experiment or any fourth classifier.</p>
+<h2 id="section-9">Files to read next</h2>
+<ul>
+<li><code>docs/METHOD_AND_LIMITATIONS.md</code>: exact split method, audit scope and interpretation.</li>
+<li><code>docs/STUDY_GUIDE.md</code>: preprocessing, model explanations, metrics and viva questions.</li>
+<li><code>docs/GROUP_WORK_PLAN.md</code>: responsibilities and next steps.</li>
+<li><code>results/REPORT.md</code>: only the new measured randomized-group results.</li>
+</ul>
+<h2 id="section-10">Original sources</h2>
+<p>Original team repository: https://github.com/Amindra-Edirisuriya/American-Sign-Language-Ditection Data: supplied MediaPipe CSV ZIP, numerically checked against the compact input. Dataset publisher/license information must be verified separately before public redistribution. The referenced proposal PDF was not provided, so proposal-specific alignment is not claimed.</p></body></html>
