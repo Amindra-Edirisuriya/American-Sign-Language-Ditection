@@ -1,0 +1,3 @@
+group,samples,errors,accuracy_pct
+known_timestamp,5644,4039,28.437278525868177
+unknown_timestamp,6873,233,96.60992288665794
